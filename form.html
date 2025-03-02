@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .loginFormContainer, #loginForm {
+            display: flex;
+            margin: auto;
+        }
+        #message {
+            position: absolute;
+            right: 50%;
+            top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loginFormContainer">
+        <form id="loginForm">
+            <input value="1sadsdaasd@mail.com" type="email" id="email" name="email" placeholder="Email" required>
+            <input value="securePass123sdadas" type="password" id="password" name="password" placeholder="Password" required>
+            <button type="submit">Log in</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    document.getElementById('message').textContent = 'Successful sucess!';
+                    document.getElementById('message').style.color = 'green';
+                } else {
+                    document.getElementById('message').textContent = data.message || 'Smth wrong';
+                    document.getElementById('message').style.color = 'tomato';
+                }
+            })
+            .catch(error => {
+                document.getElementById('message').textContent = 'Server connect error';
+                document.getElementById('message').style.color = 'tomato';
+            });
+        });
+    </script>
+</body>
+</html>
